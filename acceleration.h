@@ -5,11 +5,12 @@ const float G = 9.81;
 // [accX, accY, accZ, temp, gyrX, gyrY, gyrZ]
 // acc - ускорение, temp - температура (raw), gyr - угловая скорость
 
+boolean firstLoop = true;
 int16_t data[7];
 float accelSensitivity = 16384; // LSB/g
 float gyroSensitivity = 131; // LSB/*/s
 float accelGyro[7], lastAccel[3], accelDiff[3], vel[3];
-float dt = 1; // ms
+float dt = GLOBAL_LOOP_DELAY; // in seconds already
 float lastTime = millis();
 
 float truncate(float val, byte dec)
@@ -23,6 +24,16 @@ float truncate(float val, byte dec)
   } else {}
   x = y / pow(10, dec);
   return x;
+}
+
+void saveRAWdata() {
+  Wire.beginTransmission(MPU_addr);
+  Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU_addr, 14, true); // request a total of 14 registers
+  for (byte i = 0; i < 7; i++) {
+    data[i] = Wire.read() << 8 | Wire.read();
+  }
 }
 
 void refreshAccelGyro() {
@@ -54,9 +65,12 @@ void refreshAccelGyro() {
 }
 
 void calcVelocity() {
-  vel[0] += accelDiff[0] * dt / 1000 * G * 3.8;
-  vel[1] += accelDiff[1] * dt / 1000 * G * 3.8;
-  vel[2] += accelDiff[2] * dt / 1000 * G * 3.8;
+  if (!firstLoop) {
+    vel[0] += accelDiff[0] * G * dt;
+    vel[1] += accelDiff[1] * G * dt;
+    vel[2] += accelDiff[2] * G * dt;
+  }
+  else firstLoop = false;
 }
 
 void accelerationInit() {
@@ -84,26 +98,21 @@ void accelerationInit() {
   //Wire.write(0x30);                   // Set the register bits as 00030000 (2000deg/s full scale)
   Wire.endTransmission(true);
 
-  delay(20);
+  firstLoop = true;
+  delay(25);
 }
 
 float defineAccelVector() {
-  return sqrt(pow(accelGyro[0], 2) + pow(accelGyro[1], 2) + pow(accelGyro[2], 2));
+  return sqrt(pow(accelDiff[0], 2) + pow(accelDiff[1], 2) + pow(accelDiff[2], 2));
 }
 
 void accelerationProcess() {
   // Update dt
-  dt = millis() - lastTime;
+  dt = (millis() - lastTime) / 1000;
   lastTime = millis();
 
   // Get RAW data
-  Wire.beginTransmission(MPU_addr);
-  Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU_addr, 14, true); // request a total of 14 registers
-  for (byte i = 0; i < 7; i++) {
-    data[i] = Wire.read() << 8 | Wire.read();
-  }
+  saveRAWdata();
 
   // Prepare values is needed
   refreshAccelGyro();
