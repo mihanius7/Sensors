@@ -3,7 +3,7 @@
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 int page = 4;
-boolean autoTransition = false;
+boolean autoTransition = true;
 
 void lcdInit() {
   lcd.init();
@@ -59,10 +59,10 @@ void lcdProcess() {
       lcd.setCursor(9, 0);
       lcd.print("Vy=");
       lcd.print(vel[1]);
-      lcd.setCursor(3, 1);
+      lcd.setCursor(1, 1);
       lcd.print("Vz=");
       lcd.print(vel[2]);
-      lcd.print(" km/h");
+      lcd.print(" m/s");
       if (autoTransition) page = 1;
       break;
     default:

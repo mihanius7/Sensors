@@ -1,8 +1,8 @@
 #include <Wire.h>
 #include "printf.h"
 
-const int GLOBAL_LOOP_DELAY = 150;
-const boolean USING_PLOTTER = true;
+const int GLOBAL_LOOP_DELAY = 1000;
+const boolean USING_PLOTTER = false;
 
 #include "sensors.h"
 #include "climatic.h"
@@ -49,12 +49,13 @@ void debugToSerial() {
   Serial.print(" ");
   Serial.print(accelDiff[1]);
   Serial.print(" ");
-  Serial.print(accelDiff[2]);
-//  Serial.print(vel[0]);
-//  Serial.print(" ");
-//  Serial.print(vel[1]);
-//  Serial.print(" ");
-//  Serial.println(vel[2]);
+  Serial.println(accelDiff[2]);
+  Serial.println(F("ax ay az = "));
+  Serial.print(vel[0]);
+  Serial.print(" ");
+  Serial.print(vel[1]);
+  Serial.print(" ");
+  Serial.println(vel[2]);
   Serial.print(" ");
   Serial.println(dt);
   if (!USING_PLOTTER) {
@@ -66,5 +67,5 @@ void debugToSerial() {
     Serial.print(sunVoltage * 1.17);
     Serial.println(" V");
   }
-//  Serial.println();
+  //  Serial.println();
 }
