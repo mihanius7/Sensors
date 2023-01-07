@@ -45,11 +45,11 @@ void debugToSerial() {
     Serial.println(" m");
     Serial.print(F("ax ay az = "));
   }
-  Serial.print(accelGyro[0] - lastAccel[0]);
+  Serial.print(accelDiff[0]);
   Serial.print(" ");
-  Serial.print(accelGyro[1] - lastAccel[1]);
+  Serial.print(accelDiff[1]);
   Serial.print(" ");
-  Serial.print(accelGyro[2] - lastAccel[2]);
+  Serial.print(accelDiff[2]);
 //  Serial.print(vel[0]);
 //  Serial.print(" ");
 //  Serial.print(vel[1]);

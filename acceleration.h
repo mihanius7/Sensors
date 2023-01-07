@@ -26,9 +26,12 @@ float truncate(float val, byte dec)
 }
 
 void refreshAccelGyro() {
+  // Save last accel values
   lastAccel[0] = accelGyro[0];
   lastAccel[1] = accelGyro[1];
   lastAccel[2] = accelGyro[2];
+
+  // Convert new accel values from RAW. Fix zero values.
   accelGyro[0] = data[0] / accelSensitivity - 0.01;
   accelGyro[1] = data[1] / accelSensitivity + 0.015;
   accelGyro[2] = data[2] / accelSensitivity + 0.01;
@@ -43,12 +46,17 @@ void refreshAccelGyro() {
   accelGyro[4] = round(accelGyro[4]);
   accelGyro[5] = round(accelGyro[5]);
   accelGyro[6] = round(accelGyro[6]);
+
+  // Save accel differences
+  accelDiff[0] = accelGyro[0] - lastAccel[0];
+  accelDiff[1] = accelGyro[1] - lastAccel[1];
+  accelDiff[2] = accelGyro[2] - lastAccel[2];
 }
 
 void calcVelocity() {
-  vel[0] += (accelGyro[0] - lastAccel[0]) * dt / 1000 * G * 3.8;
-  vel[1] += (accelGyro[1] - lastAccel[1]) * dt / 1000 * G * 3.8;
-  vel[2] += (accelGyro[2] - lastAccel[2]) * dt / 1000 * G * 3.8;
+  vel[0] += accelDiff[0] * dt / 1000 * G * 3.8;
+  vel[1] += accelDiff[1] * dt / 1000 * G * 3.8;
+  vel[2] += accelDiff[2] * dt / 1000 * G * 3.8;
 }
 
 void accelerationInit() {
@@ -84,6 +92,11 @@ float defineAccelVector() {
 }
 
 void accelerationProcess() {
+  // Update dt
+  dt = millis() - lastTime;
+  lastTime = millis();
+
+  // Get RAW data
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
   Wire.endTransmission(false);
@@ -91,8 +104,8 @@ void accelerationProcess() {
   for (byte i = 0; i < 7; i++) {
     data[i] = Wire.read() << 8 | Wire.read();
   }
-  dt = millis() - lastTime;
-  lastTime = millis();
+
+  // Prepare values is needed
   refreshAccelGyro();
   calcVelocity();
 }
