@@ -9,6 +9,7 @@ const boolean USING_PLOTTER = false;
 #include "acceleration.h"
 #include "radio.h"
 #include "lcd.h"
+#include "gps.h"
 
 void setup() {
   Serial.begin(9600);
@@ -18,6 +19,7 @@ void setup() {
   climaticInit();
   accelerationInit();
   radioInit();
+  gpsInit();
 }
 
 void loop() {
@@ -25,6 +27,7 @@ void loop() {
   climaticProcess();
   accelerationProcess();
   radioProcess();
+  gpsProcess();
   lcdProcess();
 
   debugToSerial();
