@@ -8,18 +8,18 @@ const boolean USING_PLOTTER = false;
 #include "climatic.h"
 #include "acceleration.h"
 #include "radio.h"
-#include "lcd.h"
 #include "gps.h"
+#include "lcd.h"
 
 void setup() {
   Serial.begin(9600);
   printf_begin();
   Wire.begin();
-  lcdInit();
   climaticInit();
   accelerationInit();
   radioInit();
   gpsInit();
+  lcdInit();
 }
 
 void loop() {
