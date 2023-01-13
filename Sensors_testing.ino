@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include "printf.h"
 
-const int GLOBAL_LOOP_DELAY = 500;
+const int GLOBAL_LOOP_DELAY = 1500;
 const boolean USING_PLOTTER = false;
 
 #include "sensors.h"

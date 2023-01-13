@@ -61,8 +61,14 @@ void lcdProcess() {
       lcd.setCursor(0, 1);
       lcd.print("Lng = ");
       lcd.print(longitude);
+      lcd.setCursor(13, 1);
+      lcd.print("{");
+      lcd.print(satNumber);
+      lcd.print("}");
+      if (autoTransition)
+        page = 0;
       break;
-    case 6:
+    default:
       page = 0;
       break;
   }
