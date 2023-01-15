@@ -2,8 +2,8 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-int page = 4;
-boolean autoTransition = true;
+int page = 5;
+boolean autoTransition = false;
 
 void lcdInit() {
   lcd.init();
