@@ -1,11 +1,11 @@
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 
-const int rxPin = 3, txPin = 2;
+const int rxPin = 2, txPin = 3;
 int satNumber = 0;
 double latitude = 0, longitude = 0;
 
-SoftwareSerial gpsSerial = SoftwareSerial(rxPin, txPin);
+SoftwareSerial gpsSerial(rxPin, txPin);
 TinyGPSPlus gpsParser;
 
 void gpsInit() {
@@ -22,11 +22,7 @@ void gpsProcess() {
   Serial.println(gpsParser.date.value());
 
   // This sketch displays information every time a new sentence is correctly encoded.
-  if (gpsSerial.isListening()) {
-    Serial.print("GPS listening. I hear: ");
-    Serial.println(gpsSerial.read());
-  }
-  if (gpsSerial.available() > 0) {
+  while (gpsSerial.available() > 0) {
     gpsParser.encode(gpsSerial.read());
     if (gpsParser.location.isUpdated()) {
       // Latitude in degrees (double)
