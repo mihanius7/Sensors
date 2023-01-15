@@ -56,11 +56,10 @@ void lcdProcess() {
       lcd.print(" m/s");
       break;
     case 5:
-      lcd.print("Lat = ");
-      lcd.print(latitude);
+      lcd.print("GPS: ");
+      lcd.print(latitude, 6);
       lcd.setCursor(0, 1);
-      lcd.print("Lng = ");
-      lcd.print(longitude);
+      lcd.print(longitude, 6);
       lcd.setCursor(13, 1);
       lcd.print("{");
       lcd.print(satNumber);
