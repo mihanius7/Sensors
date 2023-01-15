@@ -14,16 +14,14 @@ void gpsInit() {
 }
 
 void gpsProcess() {
-  // Debug info
-  satNumber = gpsParser.satellites.value();
-  Serial.print("GPS Satellites found: ");
-  Serial.println(satNumber);
-  Serial.print("GPS date: ");
-  Serial.println(gpsParser.date.value());
-
   // This sketch displays information every time a new sentence is correctly encoded.
-  while (gpsSerial.available() > 0) {
+  if (gpsSerial.available() > 0) {
     gpsParser.encode(gpsSerial.read());
+    satNumber = gpsParser.satellites.value();
+    Serial.print("GPS Satellites found: ");
+    Serial.println(satNumber);
+    Serial.print("GPS date: ");
+    Serial.println(gpsParser.date.value());
     if (gpsParser.location.isUpdated()) {
       // Latitude in degrees (double)
       latitude = gpsParser.location.lat();
