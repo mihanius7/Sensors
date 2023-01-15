@@ -1,25 +1,25 @@
 #include <Wire.h>
 #include "printf.h"
 
-const int GLOBAL_LOOP_DELAY = 1000;
+const int GLOBAL_LOOP_DELAY = 1500;
 const boolean USING_PLOTTER = false;
 
 #include "sensors.h"
 #include "climatic.h"
 #include "acceleration.h"
 #include "radio.h"
-#include "lcd.h"
 #include "gps.h"
+#include "lcd.h"
 
 void setup() {
   Serial.begin(9600);
   printf_begin();
   Wire.begin();
-  lcdInit();
   climaticInit();
   accelerationInit();
   radioInit();
   gpsInit();
+  lcdInit();
 }
 
 void loop() {
@@ -53,16 +53,15 @@ void debugToSerial() {
   Serial.print(accelDiff[1]);
   Serial.print(" ");
   Serial.println(accelDiff[2]);
-  Serial.println(F("ax ay az = "));
+  Serial.print(F("vx vy vz = "));
   Serial.print(vel[0]);
   Serial.print(" ");
   Serial.print(vel[1]);
   Serial.print(" ");
   Serial.println(vel[2]);
-  Serial.print(" ");
+  Serial.print("Time step = ");
   Serial.println(dt);
   if (!USING_PLOTTER) {
-    Serial.println(" g");
     Serial.print(F("Battery = "));
     Serial.print(batteryVoltage * 1.17);
     Serial.println(" V");
@@ -70,5 +69,5 @@ void debugToSerial() {
     Serial.print(sunVoltage * 1.17);
     Serial.println(" V");
   }
-  //  Serial.println();
+  Serial.println();
 }
